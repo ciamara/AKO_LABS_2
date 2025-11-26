@@ -1,0 +1,13 @@
+﻿  main.c
+C:\Users\kotel\OneDrive\Pulpit\ako\AKO_LAB3\main.c(25,25): warning C4133: 'function': incompatible types - from 'wchar_t [5]' to 'char *'
+C:\Users\kotel\OneDrive\Pulpit\ako\AKO_LAB3\main.c(25,34): warning C4133: 'function': incompatible types - from 'wchar_t [6]' to 'char *'
+C:\Users\kotel\OneDrive\Pulpit\ako\AKO_LAB3\main.c(34,34): warning C4133: 'function': incompatible types - from 'wchar_t [5]' to 'const char *'
+C:\Users\kotel\OneDrive\Pulpit\ako\AKO_LAB3\main.c(39,10): warning C4477: 'printf' : format string '%ls' requires an argument of type 'unsigned short *', but variadic argument 1 has type 'char *'
+      C:\Users\kotel\OneDrive\Pulpit\ako\AKO_LAB3\main.c(39,10):
+      consider using '%hs' in the format string
+      C:\Users\kotel\OneDrive\Pulpit\ako\AKO_LAB3\main.c(39,10):
+      consider using '%s' in the format string
+      C:\Users\kotel\OneDrive\Pulpit\ako\AKO_LAB3\main.c(39,10):
+      consider using '%Ts' in the format string
+  
+  AKO_LAB3.vcxproj -> C:\Users\kotel\OneDrive\Pulpit\ako\AKO_LAB3\Debug\AKO_LAB3.exe
