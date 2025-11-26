@@ -13,3 +13,4 @@
 ### .asm subprogram for setting an environment variable of name and value called from .c         
 -> included checking if variable exists, if exists stop program and dont overwrite         
 -> also included verification in .c after creating to check if variable has been set correctly       
+-> arguments are passed and used as utf-16
