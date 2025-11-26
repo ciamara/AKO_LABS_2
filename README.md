@@ -8,9 +8,9 @@
 ## LAB2                 
 ### 64 bit hex value representing 0.xxxxxxxxxx number to decimal representation 0.xxxxxxx with following zeros deleted                   
 -> .asm program for converting a 64 bit hex value to decimal representation     
--> if decimal representation has zeros and no meaningful value after, zeros are cut and not displayed, ex.    
-      - 0.125000000000 would be written out as 0.125
-      - 0.0000000000000 would be written out as 0.0
+-> if decimal representation has zeros and no meaningful value after, zeros are cut and not displayed, ex.      
+  * 0.125000000000 would be written out as 0.125
+  * 0.0000000000000 would be written out as 0.0             
       
 ## LAB3
 ### .asm subprogram for setting an environment variable of name and value called from .c         
