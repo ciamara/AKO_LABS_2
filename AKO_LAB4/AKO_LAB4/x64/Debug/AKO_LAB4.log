@@ -1,0 +1,2 @@
+﻿main.obj : error LNK2019: unresolved external symbol simpson referenced in function main
+C:\Users\kotel\OneDrive\Pulpit\ako\AKO_LAB4\x64\Debug\AKO_LAB4.exe : fatal error LNK1120: 1 unresolved externals

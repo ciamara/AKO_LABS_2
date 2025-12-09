@@ -5,10 +5,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{07379877-1F45-4126-84A7-9D3A28B32F2D}|AKO_LAB3.vcxproj|C:\\Users\\kotel\\OneDrive\\Pulpit\\ako\\AKO_LAB3\\main.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{07379877-1F45-4126-84A7-9D3A28B32F2D}|AKO_LAB3.vcxproj|solutionrelative:main.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{07379877-1F45-4126-84A7-9D3A28B32F2D}|AKO_LAB3.vcxproj|C:\\Users\\kotel\\OneDrive\\Pulpit\\ako\\AKO_LAB3\\ustaw_zmienna.asm||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{07379877-1F45-4126-84A7-9D3A28B32F2D}|AKO_LAB3.vcxproj|solutionrelative:ustaw_zmienna.asm||{8B382828-6202-11D1-8870-0000F87579D2}"
     }
   ],
   "DocumentGroupContainers": [
@@ -28,23 +24,10 @@
               "RelativeDocumentMoniker": "main.c",
               "ToolTip": "C:\\Users\\kotel\\OneDrive\\Pulpit\\ako\\AKO_LAB3\\main.c",
               "RelativeToolTip": "main.c",
-              "ViewState": "AgIAABsAAAAAAAAAAAAAACUAAAAUAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
               "WhenOpened": "2025-11-23T12:49:07.796Z",
               "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ustaw_zmienna.asm",
-              "DocumentMoniker": "C:\\Users\\kotel\\OneDrive\\Pulpit\\ako\\AKO_LAB3\\ustaw_zmienna.asm",
-              "RelativeDocumentMoniker": "ustaw_zmienna.asm",
-              "ToolTip": "C:\\Users\\kotel\\OneDrive\\Pulpit\\ako\\AKO_LAB3\\ustaw_zmienna.asm",
-              "RelativeToolTip": "ustaw_zmienna.asm",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAAAUAAAAfAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2025-11-23T12:43:10.443Z",
               "EditorCaption": ""
             }
           ]
