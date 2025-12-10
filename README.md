@@ -17,3 +17,10 @@
 -> included checking if variable exists, if exists stop program and dont overwrite         
 -> also included verification in .c after creating to check if variable has been set correctly       
 -> arguments are passed and used as utf-16
+
+## LAB4
+### .asm subprogram for approximating an integral using simpson's rule        
+-> f is a subprogram for calculating the value of f(x)       
+-> simpson approximates the integral in a loop while using the f function for calculating f(x)     
+-> all necessary calculations are performed on the FPU to correctly preserve float value and precision
+
