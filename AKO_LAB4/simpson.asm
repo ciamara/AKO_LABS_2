@@ -61,12 +61,38 @@ _simpson PROC
 
 	; INICJALIZACJA ZMIENNYCH 
 
+
+	; ZAMIANA MIEJSCAMI GDY a >= b
+
+	xor ecx, ecx
+	xor edx, edx
+
+	mov ecx, dword ptr [ebp+8]		; ecx=a
+	mov edx, dword ptr [ebp+12]		; edx=b
+
+	fld dword ptr [ebp+12]	; ST(1)=b
+	fld dword ptr [ebp+8]		; ST(0)=a
+	fcomi ST(0), ST(1)		; porownuje a z b
+	; usuwanie ze stosu
+	fstp ST(1)
+	fstp ST(1)
+
+	jbe skip_swap
+	; a > b
+	; zamiana
+	mov dword ptr [ebp+8], edx
+	mov dword ptr [ebp+12], ecx
+
+
+skip_swap:
+
 	mov [ebp-4], dword ptr 0		; s=0
 	mov [ebp-8], dword ptr 0		; st=0
 
 	xor esi, esi		; licznik punktow przedzialowych -> i
 	inc esi
 	xor ebx, ebx		; pozycja punktu przedzialowego -> x
+
 	xor eax, eax
 
 	; INICJALIZACJA dx
