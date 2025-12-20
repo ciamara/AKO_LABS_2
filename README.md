@@ -24,3 +24,10 @@
 -> simpson approximates the integral in a loop while using the f function for calculating f(x)     
 -> all necessary calculations are performed on the FPU to correctly preserve float value and precision
 
+## LAB5
+### 16 bit .asm program that displays cusor column and row position in bottom right corner of the text mode screen, also allows for cursor movement with WASD, exit program with 'k'                   
+-> konwertuj_i_wypisz -> helper procedure for converting the value in al to decimal and displaying it                
+-> wyswietl_komorki -> procedure that displays the position of the cursor          
+-> obsluga_zegara -> procedure that handles interruption          
+-> zacznij -> main program that handles everything and awaiting for keyboard presses          
+
