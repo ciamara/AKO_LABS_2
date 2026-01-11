@@ -3,26 +3,49 @@ rozkazy SEGMENT use16
 ASSUME cs:rozkazy
 
 ;============================================================
-; podprogram pomocniczy do konwersji i wyswietlania wartosci w prawym dolnym rogu ekranu, wartosc do wypisania w al
+wektor8 dd ?        ; stary wektor zegara
+wektor9 dd ?        ; stary wektor klawiatury
+klawisz_kod db 0    ; scan code
+
+;============================================================
+; int 9h obsluga klawiatury
+obsluga_klawiatury PROC
+    push ax
+    push ds
+    
+    mov ax, cs
+    mov ds, ax
+
+    in al, 60h          ; odczyt klawiszu z portu
+    
+    ; make/break code
+    test al, 80h        
+    jnz koniec_int9     ; puszczenie klawisza
+
+    mov klawisz_kod, al ; scan code do zmiennnej
+
+koniec_int9:
+    pop ds
+    pop ax
+    jmp dword PTR cs:wektor9
+obsluga_klawiatury ENDP
+
+;============================================================
+; podprogram pomocniczy do konwersji i wyswietlania
 konwertuj_i_wypisz PROC
     push ax
     push bx
     
-    mov cl, 10      ; dzielnik
-    mov ah, 0       ; czyszczenie ah przed dzieleniem
+    mov cl, 10      
+    mov ah, 0       
+    div cl          
+    add al, 30h     
+    add ah, 30h     
     
-    div cl          ; al = dziesiatki, ah = jednosci
-    
-    add al, 30h     ; dziesiatki -> ascii
-    add ah, 30h     ; jednosci -> ascii
-    
-    ; wyswietlenie dziesiatek
     mov es:[bx], al
-    mov byte ptr es:[bx+1], 00001111B ; kolor
-    
-    ; wyswietlenie jednosci
+    mov byte ptr es:[bx+1], 00001111B 
     mov es:[bx+2], ah
-    mov byte ptr es:[bx+3], 00001111B ; kolor
+    mov byte ptr es:[bx+3], 00001111B 
     
     pop bx
     pop ax
@@ -30,39 +53,22 @@ konwertuj_i_wypisz PROC
 konwertuj_i_wypisz ENDP
 
 ;============================================================
-; podprogram do wyswietlania zawartosci adresow 0040:0050h oraz 0040:0051h w prawym dolnym rogu ekranu, jest to kolumna i wiersz pozycji kursora
+; podprogram do wyswietlania pozycji kursora
 wyswietl_komorki PROC
     push ax
     push cx
     push dx
     push ds
 
-    ; czyszczenie konsoli
-    ;mov ax, 0B800h
-    ;mov es, ax
-    ;xor di, di          ; di = 0 pierwsza komorka
-    
-    ;mov al, ' '         ;
-    ;mov ah, 07h         ; 
-    
-    ;mov cx, 2000        ; 80x25 = 2000 znakow
-;clear_loop:
-    ;mov es:[di], ax
-    ;add di, 2
-    ;loop clear_loop
-
-    ; bios data area (pozycja kursora)
     mov ax, 0040h
     mov ds, ax
 
-    ; WYSWIETLANIE KOLUMNY 0050h
-    mov al, ds:[0050h]      ; adres przechowujacy pozycje kursora (kolumne)
-    call konwertuj_i_wypisz     ; wywolanie funkcji do konwersji i wyswietlenia wartosci w al
+    mov al, ds:[0050h]      
+    call konwertuj_i_wypisz     
     
-    ; WYSWIETLANIE WIERSZA 0051h
-    add bx, 6           ; przesuniecie o pierwsze cyfry i spacje
-    mov al, ds:[0051h]      ; adres przechowujacy pozycje kursora (wiersz)
-    call konwertuj_i_wypisz     ; wywolanie funkcji do konwersji i wyswietlenia wartosci w al
+    add bx, 6           
+    mov al, ds:[0051h]      
+    call konwertuj_i_wypisz     
 
     pop ds
     pop dx
@@ -78,20 +84,15 @@ obsluga_zegara PROC
     push bx
     push es
 
-    mov ax, 0B800h ;adres pamieci ekranu
+    mov ax, 0B800h 
     mov es, ax
-    
-    ;wyswietlanie w rogu zawartosci adresow
-    mov bx, 3988        ; adres rogu ekranu - tyle ile potrzebujemy na wyswietlanie cyfr
+    mov bx, 3988        
     call wyswietl_komorki
 
     pop es
     pop bx
     pop ax
-    ; skok do oryginalnej procedury obslugi przerwania zegarowego
     jmp dword PTR cs:wektor8
-
-    wektor8 dd ?
 obsluga_zegara ENDP
 
 ;============================================================
@@ -103,114 +104,126 @@ zacznij:
     xor di, di
     mov ax, 0720h
     mov cx, 2000
-    cld     ; kierunek przetwarzania w przod
-    rep stosw   ; wypelnienie calego ekranu
+    cld     
+    rep stosw   
 
-    mov al, 0       ; numer strony
-    mov ah, 5       ; funkcja do przelaczania strony
-    int 10      ; wywolanie uslugi biosu
+    mov al, 0       
+    mov ah, 5       
+    int 10      
 
     mov ax, 0
-    mov ds,ax ; zerowanie rejestru DS
-    ; odczytanie zawartosci wektora nr 8 i zapisanie go w zmiennej wektor8 
-    mov eax,ds:[32] ; adres fizyczny 0*16 + 32 = 32, przerwanie nr 8
-    mov cs:wektor8, eax     ; zapisanie starego adresu aby potem przywrocic
+    mov ds, ax
 
-    ; wpisanie do wektora nr 8 adresu procedury 'obsluga_zegara'
-    mov ax, SEG obsluga_zegara ; czesc segmentowa adresu
-    mov bx, OFFSET obsluga_zegara ; offset adresu
-    cli ; zablokowanie przerwan
-    ; zapisanie adresu procedury do wektora nr 8
-    mov ds:[32], bx ; OFFSET
-    mov ds:[34], ax ; cz. segmentowa
-    sti ;odblokowanie przerwan
+    ; ---INT 8 ---
+    mov eax, ds:[32] 
+    mov cs:wektor8, eax     
+    
+    mov ax, SEG obsluga_zegara 
+    mov bx, OFFSET obsluga_zegara 
+    cli 
+    mov ds:[32], bx 
+    mov ds:[34], ax 
+    sti 
 
-    ; oczekiwanie na nacisniecie klawiszy 'k', 'w', 'a', 's', 'd'
+    ; ---INT 9 ---
+    ; 9 * 4 = 36
+    mov eax, ds:[36]
+    mov cs:wektor9, eax ; zapamietanie starego wektoru
+
+    mov ax, SEG obsluga_klawiatury
+    mov bx, OFFSET obsluga_klawiatury
+    cli
+    mov ds:[36], bx     ; offset nowej procedury
+    mov ds:[38], ax     ; segment nowej procedury
+    sti
+
 aktywne_oczekiwanie:
-    mov ah,1
-    int 16H
-    ; funkcja INT 16H (AH=1) BIOSu ustawia ZF=1 jesli
-    ; nacisnieto jakis klawisz
-    jz aktywne_oczekiwanie
-    ; odczytanie kodu ASCII nacisnietego klawisza (INT 16H, AH=0)
-    ; do rejestru AL
-    mov ah, 0
-    int 16H     ; pobranie znaku z bufora, al = ascii
 
-    cmp al, 'a'     ; lewo
+    cmp cs:klawisz_kod, 0
+    je aktywne_oczekiwanie ; 0 -> brak wcisniecia
+
+    mov al, cs:klawisz_kod ; pobranie kodu
+    mov cs:klawisz_kod, 0  ; wyzerowanie zmiennej
+
+    ; porownanie make codow
+    cmp al, 1Eh     ; a scan code 1Eh
     je lewo
-    cmp al, 's'     ; dol
+    cmp al, 1Fh     ; s scan code 1Fh
     je dol
-    cmp al, 'd'     ; prawo
+    cmp al, 20h     ; d scan code 20h
     je prawo
-    cmp al, 'w'     ; gora
+    cmp al, 11h     ; w scan code 11h
     je gora
 
-    cmp al, 'k'     ; wyjscie z programu
+    cmp al, 25h     ; k scan code 25h
     je exit
-    jne aktywne_oczekiwanie ; skok, gdy inny znak
+    
+    jmp aktywne_oczekiwanie ; inny klawisz
 
 lewo:
-    ; kursor w lewo
-    mov ax, 0040h       ; dane pozycji kursora
+    mov ax, 0040h       
     mov ds, ax
-    mov dl, ds:[0050h]   ; aktualna kolumna
-    mov dh, ds:[0051h]   ; aktualny wiersz
-    dec dl               ; ruch kursora w lewo
-    cmp dl, 0FFh         ; sprawdzam czy powinno sie zawinac
+    mov dl, ds:[0050h]   
+    mov dh, ds:[0051h]   
+    dec dl               
+    cmp dl, 0FFh         
     jne aktualizacja_kursora
-    mov dl, 79           ; zawijanie do ostatniej (79) kolumny
+    mov dl, 79           
     jmp aktualizacja_kursora
 dol:
-    ; kursor w dol
     mov ax, 0040h
     mov ds, ax
     mov dl, ds:[0050h]
     mov dh, ds:[0051h]
-    inc dh               ; ruch kursora w dol
-    cmp dh, 25           ; czy ostatni wiersz
+    inc dh               
+    cmp dh, 25           
     jne aktualizacja_kursora
-    mov dh, 0            ; zawiniecie do pierwszego wiersza (0)
+    mov dh, 0            
     jmp aktualizacja_kursora
 prawo:
-    ; kursor w prawo
     mov ax, 0040h
     mov ds, ax
     mov dl, ds:[0050h]
     mov dh, ds:[0051h]
-    inc dl               ; ruch kursora w prawo
-    cmp dl, 80           ; sprawdzam czy ostatnia kolumna
+    inc dl               
+    cmp dl, 80           
     jne aktualizacja_kursora
-    mov dl, 0            ; zawijanie do pierwszej (0)
+    mov dl, 0            
     jmp aktualizacja_kursora
 gora:
-    ; kursor w gore
     mov ax, 0040h
     mov ds, ax
     mov dl, ds:[0050h]
     mov dh, ds:[0051h]
-    dec dh               ; ruch kursora w gore
-    cmp dh, 0FFh         ; sprawdzam czy pierwszy wiersz
+    dec dh               
+    cmp dh, 0FFh         
     jne aktualizacja_kursora
-    mov dh, 24           ; zawiniecie do ostatniego wiersza (24)
+    mov dh, 24           
     jmp aktualizacja_kursora
 
 aktualizacja_kursora:
-    mov ah, 02h          ; bios -> ustawienie kursora
-    mov bh, 0            ; strona 0
-    int 10h             ; ruch fizyczny kursora na ekranie
+    ;bialy prostokat
+    ;mov al, 0dbh
+    ;mov bl, 00001111B
+    ;mov ah, 09h
+    ;int 10h
+    mov ah, 02h          
+    mov bh, 0            
+    int 10h             
     jmp aktywne_oczekiwanie
 
 exit:
     xor ax, ax
     mov ds, ax
-    ; deinstalacja procedury obslugi przerwania zegarowego
-    ; odtworzenie oryginalnej zawartosci wektora nr 8
-    mov eax, cs:wektor8     ; pobranie starego oryginalnego adresu
+    
     cli
-    mov ds:[32], eax ; przeslanie wartosci oryginalnej
-    ; do wektora 8 w tablicy wektorow
-    ; przerwan
+    ; przywrocenie wektora 8 
+    mov eax, cs:wektor8     
+    mov ds:[32], eax 
+    
+    ; przywrocenie wektora 9
+    mov eax, cs:wektor9
+    mov ds:[36], eax
     sti
 
     mov al, 0
